@@ -18,6 +18,14 @@ app.get('/pair', (req, res) => {
 app.get('/qr', (req, res) => {
     res.sendFile(path.join(__path, '/public/qr.html'));
 });
+
+app.get('/web-pair', (req, res) => {
+    res.sendFile(path.join(__path, '/public/web-pair.html'));
+});
+
+app.get('/web-qr', (req, res) => {
+    res.sendFile(path.join(__path, '/public/web-qr.html'));
+});
 /*
 app.get('/update-session', (req, res) => {
     res.sendFile(path.join(__path, '/public/updateSession.html'));
@@ -31,6 +39,12 @@ app.use('/qr-code', qrCode);
 
 let pair = require('./pair');
 app.use('/code', pair);
+
+let webqr = require('./web-qr');
+app.use('/web-qrcode', webqr);
+
+let webpair = require('./web-pair');
+app.use('/web-code', webpair);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__path, '/public/index.html'));
