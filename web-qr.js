@@ -66,7 +66,21 @@ router.get('/', async (req, res) => {
             session.ev.on('connection.update', async (update) => {
                 const { connection, lastDisconnect, qr } = update;
 
-                if (qr) await res.end(await QRCode.toBuffer(qr));
+                const colors = ['#FFFFFF', '#FFFF00', '#00FF00', '#FF0000', '#0000FF', '#800080'];  // Array of colors
+const randomColor = colors[Math.floor(Math.random() * colors.length)];  // Pick a random color
+
+if (qr) {
+  const buffer = await QRCode.toBuffer(qr, {
+    type: 'png',              // Output type (PNG)
+    color: {
+      dark: randomColor,      // Random dark color
+      light: '#00000000'      // Transparent background
+    },
+    width: 300,               // Adjust the size if needed
+  });
+
+  await res.end(buffer);
+}
 
                 if (connection === "open") {
                     // Connection established
