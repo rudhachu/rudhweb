@@ -1,178 +1,232 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1737874207490861"
-            crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RUDHRA QR SCAN</title>
+    <title>Rudhra Bot QR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&amp;display=swap" rel="stylesheet">
-    <title>QR</title>
     <style>
-        .bg {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: 400% 400%;
-            animation: AnimateBG 25s ease infinite;
-        }
-
-        @keyframes AnimateBG {
-            0% {
-                background-position: 0% 50%
-            }
-
-            50% {
-                background-position: 100% 50%
-            }
-
-            100% {
-                background-position: 0% 50%
-            }
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Outfit";
-            background: linear-gradient(-45deg, #101010, #101010, #101010, #000000);
-            background-size: 400% 400%;
-            animation: gradient 10s ease infinite;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        jsl.code {
-            overflow: hidden;
-            background: linear-gradient(-45deg, #9b59b6, #3498db, #2ecc71, #9b59b6);
-            background-size: 400% 400%;
-            animation: gradient 8s ease infinite;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-family: 'Montserrat', sans-serif;
-            height: 110vh;
-            margin: 0px;
-
-        }
-
-        p.legend {
-            color: #fff;
-            font-size: 1em;
-            font-weight: 400;
-            padding: 0em 1.1em;
-            margin-top: 0.1em;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            overflow: hidden;
         }
 
-        :root {
-            --main-color: hsl(212, 45%, 89%);
-            --principalText-color: hsl(218, 44%, 22%);
-            --secondText-color: hsl(220, 15%, 55%);
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(45deg, #000000, #01030d);
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            padding: clamp(10px, 3vw, 20px);
         }
 
-        #content {
+        .container {
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
-            width: 22rem;
+            align-items: center;
+        }
+
+        .box {
+            width: min(340px, 95%);
+            height: auto;
+            min-height: 340px;
+            padding: clamp(15px, 4vw, 30px);
+            position: relative;
             text-align: center;
-            background-color: #000000;
-            padding: 1rem;
-            border-radius: 14px;
+            background-color: rgba(0, 2, 28, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(4, 157, 243, 0.95);
+            box-shadow: 0 0 30px rgba(4, 157, 243, 0.90),
+                        inset 0 0 20px rgba(4, 157, 243, 0.95);
+            animation: glowingBorder 2s infinite alternate;
         }
 
-        #QR-content img {
+        .title {
+            color: #fff;
+            font-size: clamp(1.5em, 5vw, 2em);
+            margin-bottom: clamp(10px, 3vw, 20px);
+            text-shadow: 0 0 10px rgba(0, 227, 255, 0.61);
+        }
+
+        .subtitle {
+            color: #0be0cb;
+            font-size: clamp(1em, 3vw, 1.2em);
+            margin-bottom: clamp(15px, 4vw, 30px);
+        }
+
+        .qr-container {
+            background-color: rgba(0, 2, 28, 0.95);
+            padding: clamp(10px, 3vw, 20px);
+            border-radius: 15px;
+            margin: clamp(10px, 3vw, 20px) 0;
+            box-shadow: 0 0 20px rgba(0, 144, 255, 0.61);
+            width: 100%;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #qrcode {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            margin: 10px auto;
             border-radius: 10px;
-            width: 20rem;
+            transition: transform 0.3s ease;
+            display: block;
         }
 
-        #title-container {
-            padding: 1rem 1rem 0 1rem;
-            color: #fff;
-            font-weight: 700;
-            margin-bottom: 1rem;
+        #qrcode:hover {
+            transform: scale(1.05);
         }
 
-        #description-container {
-            padding: 0 2.5rem 0 2.5rem;
-            color: #fff;
-            margin-bottom: 2rem;
+        .timer {
+            margin: clamp(10px, 3vw, 15px) 0;
+            padding: clamp(8px, 2vw, 10px);
+            border-radius: 8px;
+            background-color: rgba(0, 2, 28, 0.95);
+            animation: pulse 2s infinite;
+            font-size: clamp(0.9em, 2.5vw, 1em);
+            box-shadow: 0 0 20px rgba(0, 144, 255, 0.61);
         }
 
-        #p-legend {
-            font-size: 1em;
-            font-weight: 400;
-            padding: 0em 1.1em;
-            margin-top: 0.1em;
+        .refresh-btn {
+            padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 25px);
+            border-radius: 10px;
+            background: linear-gradient(45deg, #7105ff, #4405ff);
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: clamp(15px, 4vw, 20px);
+            font-size: clamp(0.8em, 2.5vw, 1em);
         }
 
-        .reload-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #ffffff; /* White color */
-            color: #000000; /* black text color */
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 144, 255, 0.61);
         }
 
-        .reload-button:hover {
-            background-color: #2980b9; /* Darker blue color on hover */
+        .footer {
+            margin-top: clamp(15px, 4vw, 20px);
+            color: #999;
+            font-size: clamp(0.8em, 2vw, 0.9em);
+            text-align: center;
+            width: 100%;
         }
-    </style>
-    <script>
-        var timeleft = 30;
-        var downloadTimer = setInterval(function () {
-            if (timeleft <= 0) {
-                clearInterval(downloadTimer);
-                document.getElementById("progressBar").remove();
-                document.getElementById("main").innerHTML = "QR Expired! Please reload";
-                document.getElementById("legend").innerHTML = ""
+
+        .emoji {
+            font-size: clamp(1.2em, 4vw, 1.5em);
+            margin: clamp(8px, 2vw, 10px) 0;
+        }
+
+        .expired {
+            margin: clamp(10px, 3vw, 15px) 0;
+            padding: clamp(10px, 3vw, 15px);
+            background-color: rgba(0, 2, 28, 0.95);
+            border-radius: 10px;
+            font-size: clamp(0.8em, 2.5vw, 0.9em);
+            line-height: 1.6;
+            color: red;
+            width: 100%;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes glowingBorder {
+            from {
+                box-shadow: 0 0 20px rgba(149, 0, 255, 1),
+                            inset 0 0 10px rgba(3, 209, 4, 1);
             }
-            document.getElementById("progressBar").value = 30 - timeleft;
-            timeleft -= 1;
-        }, 1000);
-    </script>
+            to {
+                box-shadow: 0 0 40px rgba(97, 28, 226, 0.95),
+                            inset 0 0 20px rgba(4, 157, 243, 0.95);
+            }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 360px) {
+            .box {
+                padding: 10px;
+            }
+
+            .qr-container {
+                padding: 10px;
+            }
+
+            .instructions {
+                font-size: 0.8em;
+            }
+}
+    </style>
 </head>
 <body>
-<div class="bg">
-    <div id="content">
-        <div id="QR-content">
-            <img id="qr-image" src="/web-qrcode" alt="QR CODE">
+    <div class="container">
+        <div class="box">
+            <div class="emoji">⌨</div>
+            <h2 class="title">RUDHRA QR CODE</h2>
+            <p class="subtitle">Rudhra mega Section ID</p>
+
+            <div class="qr-container">
+                <img id="qrcode" src="/web-qrcode" alt="QR-CODE">
+            </div>
+
+            <div class="timer">
+        QR Code will expire in <span id="countdown">30</span> seconds
+         </div>
+
+            <div class="expired" id="expiredMessage" style="display: none;">
+                QR Expired! Please Refresh.
+                <button onclick="javascript:history.go(0)" class="refresh-btn">Refresh QR 🔄</button>
+            </div>
+            <div class="footer">
+                <p>Hey, if you don't get the section ID, try server 2.</p>
+
+            </div>
+            <div class="container">
+          <div></div>
+    <div></div>
+    <a href="/qr" class="button" target="_blank"> <span>𝗧𝗿𝘆 𝗾𝗿 𝘀𝗲𝗿𝘃𝗲𝗿 𝟮 𝗣𝗮𝘀𝘁𝗲𝗯𝗶𝗻 ➥</span> </a> <br>
+          </div>
         </div>
-        <div id="title-container">
-            <h2 id="main">RUDHRA-BOT QR</h2>
-            <p class="legend" id="legend">Scan The QR Code</p>
-        </div>
-        <div id="description-container">
-            <p id="semi" class="legend"></p>
-            <progress value="0" max="30" id="progressBar"></progress>
-        </div>
-        <a href="javascript:history.go(0)" class="reload-button">Reload Page</a>
     </div>
-</div>
+        <script>
+        let timeLeft = 30;
+        const timer = document.getElementById('countdown');
+        const expiredMessage = document.getElementById('expiredMessage');
+
+        const interval = setInterval(() => {
+            timeLeft -= 1;
+            timer.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                timer.textContent = "0";
+                expiredMessage.style.display = "block";
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
