@@ -1,331 +1,301 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>RUDHRA PAIRING CODE</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-    <link rel="icon" href="favicons/QyfhhwM.png" type="image/png" />
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUDHRA PAIR CODE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&amp;display=swap" rel="stylesheet">
     <style>
-      @font-face {
-        font-family: 'Sequel 100';
-        src: url('sequel100.woff2') format('woff2'), /* Modern Browsers */ url('sequel100.woff') format('woff'); /* Older Browsers */
-        font-weight: bold;
-      }
-      body {
-        background-color: #000000;
-        color: #ffffff;
-        overflow: hidden;
-        font-family: 'Sequel 100', sans-serif;
-        display: flex;
-        justify-content: center;
-        font-size: small;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      .container {
-        max-width: 400px;
-        padding: 20px;
-        background-color: black;
-        border-radius: 20px;
-        box-shadow: 0 0 30px rgb(0, 0, 0);
-        border: #ffffff
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(45deg, #000000, #01030d);
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            padding: clamp(10px, 3vw, 20px);
+        }
 
-      .input-container {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        margin-bottom: 10px;
-      }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-      select {
-        padding: 10px;
-        border: infinite;
-        border-colour: #ffffff
-        border-radius: 5px;
-        background-color: #333;
-        color: #fff;
-        margin-right: 5px;
-        flex-shrink: 0;
-      }
+        .box {
+            width: min(340px, 95%);
+            height: auto;
+            min-height: 340px;
+            padding: clamp(15px, 4vw, 30px);
+            position: relative;
+            text-align: center;
+            background-color: rgba(0, 2, 28, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(4, 157, 243, 0.95);
+            box-shadow: 0 0 30px rgba(4, 157, 243, 0.90),
+                        inset 0 0 20px rgba(4, 157, 243, 0.95);
+            animation: glowingBorder 2s infinite alternate;
+        }
 
-      input[type='text'] {
-        flex-grow: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        background-color: #333;
-        color: #fff;
-        font-family: 'Consolas', monospace;
-      }
+        .title {
+            color: #fff;
+            font-size: clamp(1.5em, 5vw, 2em);
+            margin-bottom: clamp(10px, 3vw, 20px);
+            text-shadow: 0 0 10px rgba(0, 227, 255, 0.61);
+        }
 
-      button {
-        background-color: #000;
-        color: #fff;
-        font-family: 'Sequel 100', sans-serif;
-        padding: 10px 0;
-        border: none;
-        outline: 2px solid;
-        border-radius: 5px;
-        cursor: pointer;
-        width: 100%;
-        font-weight: bold;
-      }
+        .subtitle {
+            color: #0be0cb;
+            font-size: clamp(1em, 3vw, 1.2em);
+            margin-bottom: clamp(15px, 4vw, 30px);
+        }
 
-      button:hover {
-        background-color: #fff;
-        color: #000;
-        outline: 2px solid;
-        border-radius: 5px;
-      }
+     .input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 20px 0;
+    }
 
-      #result {
-        margin-top: 20px;
-        color: #fff;
-        font-family: 'Consolas', monospace;
-        font-size: 16px;
-        cursor: pointer;
-        font-weight: 800;
-      }
+    .input-container input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: rgba(0, 2, 28, 0.95);
+      border: 1px solid rgba(0, 144, 255, 0.61);
+      box-shadow: 0 0 20px rgba(0, 144, 255, 0.61);
+      color: #fff;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .input-container input:focus {
+      outline: none;
+      border-color: #00bfff
+      box-shadow: 0 0 15px rgba(0, 191, 255);
+    }
+
+    .input-container button {
+            padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 25px);
+            border-radius: 10px;
+            background: linear-gradient(45deg, #7105ff, #4405ff);
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: clamp(15px, 4vw, 20px);
+            font-size: clamp(0.8em, 2.5vw, 1em);
+    }
+
+    .input-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 144, 255, 0.61);
+    }
+
+        .status {
+            margin: clamp(10px, 3vw, 15px) 0;
+            padding: clamp(8px, 2vw, 10px);
+            border-radius: 8px;
+            background: rgba(0, 2, 28, 0.95);
+            animation: pulse 2s infinite;
+            font-size: clamp(0.9em, 2.5vw, 1em);
+        }
+
+        .refresh-btn {
+            padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 25px);
+            border-radius: 10px;
+            background: linear-gradient(45deg, #7105ff, #4405ff);
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: clamp(15px, 4vw, 20px);
+            font-size: clamp(0.8em, 2.5vw, 1em);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 144, 255, 0.61);
+        }
+
+        .footer {
+            margin-top: clamp(15px, 4vw, 20px);
+            color: #999;
+            font-size: clamp(0.8em, 2vw, 0.9em);
+            text-align: center;
+            width: 100%;
+        }
+
+        .emoji {
+            font-size: clamp(1.2em, 4vw, 1.5em);
+            margin: clamp(8px, 2vw, 10px) 0;
+        }
+
+        .instructions {
+            margin: clamp(10px, 3vw, 15px) 0;
+            padding: clamp(10px, 3vw, 15px);
+            background: rgba(0, 2, 28, 0.95);
+            border-radius: 10px;
+            font-size: clamp(0.8em, 2.5vw, 0.9em);
+            line-height: 1.6;
+            color: #ccc;
+            width: 100%;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes glowingBorder {
+            from {
+                box-shadow: 0 0 20px rgba(149, 0, 255, 1),
+                            inset 0 0 10px rgba(3, 209, 4, 1);
+            }
+            to {
+                box-shadow: 0 0 40px rgba(97, 28, 226, 0.95),
+                            inset 0 0 20px rgba(4, 157, 243, 0.95);
+            }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 360px) {
+            .box {
+                padding: 10px;
+            }
+
+            .qr-container {
+                padding: 10px;
+            }
+
+            .instructions {
+                font-size: 0.8em;
+            }
+}
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <h2 align="center">
-        <m>RUDHRA <a style="color: #fffff">PAIRING CODE</m></i>
-      </h2>
-      <div class="input-container">
-        <select id="countryCode">
-          <option value="91">+91</option>
-          <option value="1">+1</option>
-          <option value="7">+7</option>
-          <option value="20">+20</option>
-          <option value="27">+27</option>
-          <option value="30">+30</option>
-          <option value="31">+31</option>
-          <option value="32">+32</option>
-          <option value="33">+33</option>
-          <option value="34">+34</option>
-          <option value="36">+36</option>
-          <option value="39">+39</option>
-          <option value="40">+40</option>
-          <option value="41">+41</option>
-          <option value="42">+42</option>
-          <option value="43">+43</option>
-          <option value="44">+44</option>
-          <option value="45">+45</option>
-          <option value="46">+46</option>
-          <option value="47">+47</option>
-          <option value="48">+48</option>
-          <option value="49">+49</option>
-          <option value="51">+51</option>
-          <option value="52">+52</option>
-          <option value="53">+53</option>
-          <option value="54">+54</option>
-          <option value="55">+55</option>
-          <option value="56">+56</option>
-          <option value="57">+57</option>
-          <option value="58">+58</option>
-          <option value="60">+60</option>
-          <option value="61">+61</option>
-          <option value="62">+62</option>
-          <option value="63">+63</option>
-          <option value="64">+64</option>
-          <option value="65">+65</option>
-          <option value="66">+66</option>
-          <option value="81">+81</option>
-          <option value="82">+82</option>
-          <option value="84">+84</option>
-          <option value="86">+86</option>
-          <option value="90">+90</option>
-          <option value="92">+92</option>
-          <option value="94">+94</option>
-          <option value="95">+95</option>
-          <option value="98">+98</option>
-          <option value="212">+212</option>
-          <option value="213">+213</option>
-          <option value="216">+216</option>
-          <option value="218">+218</option>
-          <option value="220">+220</option>
-          <option value="221">+221</option>
-          <option value="222">+222</option>
-          <option value="223">+223</option>
-          <option value="224">+224</option>
-          <option value="226">+226</option>
-          <option value="227">+227</option>
-          <option value="228">+228</option>
-          <option value="229">+229</option>
-          <option value="231">+231</option>
-          <option value="232">+232</option>
-          <option value="233">+233</option>
-          <option value="234">+234</option>
-          <option value="236">+236</option>
-          <option value="237">+237</option>
-          <option value="238">+238</option>
-          <option value="239">+239</option>
-          <option value="240">+240</option>
-          <option value="241">+241</option>
-          <option value="242">+242</option>
-          <option value="244">+244</option>
-          <option value="245">+245</option>
-          <option value="248">+248</option>
-          <option value="249">+249</option>
-          <option value="250">+250</option>
-          <option value="251">+251</option>
-          <option value="252">+252</option>
-          <option value="253">+253</option>
-          <option value="254">+254</option>
-          <option value="256">+256</option>
-          <option value="257">+257</option>
-          <option value="258">+258</option>
-          <option value="260">+260</option>
-          <option value="261">+261</option>
-          <option value="262">+262</option>
-          <option value="263">+263</option>
-          <option value="264">+264</option>
-          <option value="265">+265</option>
-          <option value="266">+266</option>
-          <option value="267">+267</option>
-          <option value="268">+268</option>
-          <option value="269">+269</option>
-          <option value="290">+290</option>
-          <option value="291">+291</option>
-          <option value="297">+297</option>
-          <option value="298">+298</option>
-          <option value="299">+299</option>
-          <option value="350">+350</option>
-          <option value="351">+351</option>
-          <option value="352">+352</option>
-          <option value="353">+353</option>
-          <option value="354">+354</option>
-          <option value="356">+356</option>
-          <option value="357">+357</option>
-          <option value="358">+358</option>
-          <option value="359">+359</option>
-          <option value="370">+370</option>
-          <option value="371">+371</option>
-          <option value="372">+372</option>
-          <option value="373">+373</option>
-          <option value="374">+374</option>
-          <option value="375">+375</option>
-          <option value="376">+376</option>
-          <option value="377">+377</option>
-          <option value="378">+378</option>
-          <option value="379">+379</option>
-          <option value="380">+380</option>
-          <option value="381">+381</option>
-          <option value="385">+385</option>
-          <option value="386">+386</option>
-          <option value="387">+387</option>
-          <option value="389">+389</option>
-          <option value="417">+417</option>
-          <option value="421">+421</option>
-          <option value="500">+500</option>
-          <option value="501">+501</option>
-          <option value="502">+502</option>
-          <option value="503">+503</option>
-          <option value="504">+504</option>
-          <option value="505">+505</option>
-          <option value="506">+506</option>
-          <option value="507">+507</option>
-          <option value="509">+509</option>
-          <option value="590">+590</option>
-          <option value="591">+591</option>
-          <option value="592">+592</option>
-          <option value="593">+593</option>
-          <option value="594">+594</option>
-          <option value="595">+595</option>
-          <option value="596">+596</option>
-          <option value="597">+597</option>
-          <option value="598">+598</option>
-          <option value="670">+670</option>
-          <option value="671">+671</option>
-          <option value="672">+672</option>
-          <option value="673">+673</option>
-          <option value="674">+674</option>
-          <option value="675">+675</option>
-          <option value="676">+676</option>
-          <option value="677">+677</option>
-          <option value="678">+678</option>
-          <option value="679">+679</option>
-          <option value="680">+680</option>
-          <option value="681">+681</option>
-          <option value="682">+682</option>
-          <option value="683">+683</option>
-          <option value="686">+686</option>
-          <option value="687">+687</option>
-          <option value="688">+688</option>
-          <option value="689">+689</option>
-          <option value="691">+691</option>
-          <option value="692">+692</option>
-          <option value="850">+850</option>
-          <option value="852">+852</option>
-          <option value="853">+853</option>
-          <option value="855">+855</option>
-          <option value="856">+856</option>
-          <option value="880">+880</option>
-          <option value="886">+886</option>
-          <option value="960">+960</option>
-          <option value="961">+961</option>
-          <option value="962">+962</option>
-          <option value="963">+963</option>
-          <option value="964">+964</option>
-          <option value="965">+965</option>
-          <option value="966">+966</option>
-          <option value="967">+967</option>
-          <option value="968">+968</option>
-          <option value="969">+969</option>
-          <option value="971">+971</option>
-          <option value="972">+972</option>
-          <option value="973">+973</option>
-          <option value="974">+974</option>
-          <option value="975">+975</option>
-          <option value="976">+976</option>
-          <option value="977">+977</option>
-          <option value="993">+993</option>
-          <option value="994">+994</option>
-          <option value="996">+996</option>
-        </select>
-        <input type="text" id="mobileNumber" placeholder="Enter mobile number" />
-      </div>
-      <button onclick="fetchData()"><a>GET CODE</a></button>
-      <div class="result" onclick="copy()" id="result"></div>
-      <input style="visibility: hidden; width: 94%" type="text" id="session" readonly placeholder="Your session" />
-    </div>
+        <div class="box">
+          <div class="emoji">⌨</div>
+            <h2 class="title">RUDHRA PAIR CODE</h2>
+            <p class="subtitle">Rudhra Mega section ID</p>
 
-    <script>
-      // avoid cors with headers
-      function fetchData() {
-        const countryCode = document.getElementById('countryCode').value
-        const mobileNumber = document.getElementById('mobileNumber').value
-        const result = document.getElementById('result')
-        const session = document.getElementById('session')
-        result.innerHTML = 'Loading...'
-        if (countryCode && mobileNumber) {
-          fetch(`/web-code?number=${countryCode}${mobileNumber}`)
-            .then((res) => res.json())
-            .then((data) => {
-              result.innerHTML = data.code
-              session.value = data.code
-            })
-            .catch((err) => {
-              result.innerHTML = err
-            })
-        } else {
-          result.innerHTML = 'Please enter a valid number'
-        }
+            <div class="input-container">
+          <input type="tel" id="number" placeholder="Enter Number (e.g.,91xxxxxxxxx)" pattern="[0-9]+" inputmode="numeric" />
+          <button id="submit">Generate Code</button>
+        </div>
+        <div id="pair"></div>
+
+        <div class="status" id="status">
+            <div class="instructions">
+                <button onclick="javascript:history.go(0)" class="refresh-btn">Refresh 🔄</button>
+            </div>
+            <div class="footer">
+                <p>Hey, if you don't get the section ID, try server 2.</p>
+
+            </div>
+            <div class="container">
+          <div></div>
+    <div></div>
+    <a href="/pair" class="button" target="_blank"> <span>𝗧𝗿𝘆 𝗖𝗼𝗱𝗲 𝘀𝗲𝗿𝘃𝗲𝗿 𝟮 ➥</span> </a> <br>
+          </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+      <script>
+    const pairElement = document.getElementById("pair");
+    const submitButton = document.getElementById("submit");
+    const numberInput = document.getElementById("number");
+    const boxElement = document.getElementById("box");
+
+    async function Copy() {
+      try {
+        const copyElement = document.getElementById("copy");
+        const textToCopy = copyElement.innerText.replace('CODE: ', '');
+        await navigator.clipboard.writeText(textToCopy);
+
+        const originalText = copyElement.innerText;
+        copyElement.innerText = "COPIED";
+        copyElement.style.color = "#009dff";
+        copyElement.style.fontWeight = "bold";
+
+        setTimeout(() => {
+          copyElement.innerText = originalText;
+          copyElement.style.color = "#fff";
+          copyElement.style.fontWeight = "bold";
+        }, 500);
+      } catch (err) {
+        console.error('Failed to copy text:', err);
       }
-      // copy to clipboard when click and touch
-        async function copy() {
-            const result = document.getElementById('result');
-            await navigator.clipboard.writeText(result.textContent);
-            alert('Copied the text: ' + session.value);
-        }
-    </script>
+    }
+
+    submitButton.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      const number = numberInput.value.replace(/[^0-9]/g, "");
+
+      if (!number) {
+        pairElement.innerHTML = '<span style="color:#ff3333;font-weight:bold"> Enter your WhatsApp number with country code</span><br><br>';
+        return;
+      }
+
+      if (number.length < 11) {
+        pairElement.innerHTML = '<span style="color:#ff3333;font-weight:bold"> Invalid number format</span><br><br>';
+        return;
+      }
+
+      // Format the phone number
+      const formattedNumber = number.split('').reduce((acc, digit, index) => {
+        if (index === 2 || index === 7) return acc + ' ' + digit;
+        return acc + digit;
+      }, '');
+
+      numberInput.type = "text";
+      numberInput.value = "+" + formattedNumber;
+      numberInput.style.color = "#fff";
+      numberInput.style.fontSize = "20px";
+
+      pairElement.innerHTML = '<span style="color:#fff;font-weight:bold">Please wait for some time...</span><br><br>';
+
+      try {
+        const { data } = await axios(`/web-code?number=${number}`);
+        const code = data.code || "Service Unavailable";
+        pairElement.innerHTML = `
+          <div id="copy" onclick="Copy()" style="color:#fff;font-weight:bold;font-size:1.25em">
+            CODE: <span style="color:#009dff;font-weight:bold">${code}</span>
+          </div><br><br>
+        `;
+      } catch (error) {
+        pairElement.innerHTML = '<span style="color:#ff3333;font-weight:bold"> Service Error. Please try again later.</span><br><br>';
+      }
+    });
+  </script>
 </body>
 </html>
-  
