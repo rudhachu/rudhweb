@@ -21,7 +21,6 @@ const {
 const browserOptions = [
 		Browsers.macOS("Safari"),
 		Browsers.macOS("Desktop"),
-		Browsers.macOS("Chrome"),
 		Browsers.macOS("Firefox"),
 		Browsers.macOS("Opera"),
 ];
