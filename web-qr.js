@@ -1,153 +1,144 @@
-const { makeid } = require('./id');
-const express = require('express');
-const QRCode = require('qrcode');
-const fs = require('fs');
+const { exec } = require("child_process");
+const { upload } = require("./mega");
+const express = require("express");
+const router = express.Router();
 const pino = require("pino");
-const {
+const { toBuffer } = require("qrcode");
+const path = require("path");
+const fs = require("fs-extra");
+const { Boom } = require("@hapi/boom");
+
+
+// Clear the existing authentication directory
+if (fs.existsSync("./temp")) {
+  fs.emptyDirSync(path.join(__dirname, "/temp"));
+}
+
+// Main route to handle QR code generation and session management
+router.get("/", async (req, res) => {
+  const {
     default: makeWASocket,
     useMultiFileAuthState,
-    delay,
-    makeCacheableSignalKeyStore,
     Browsers,
-    jidNormalizedUser
-} = require("@whiskeysockets/baileys");
-const { upload } = require('./mega');
+    delay,
+    DisconnectReason,
+    makeInMemoryStore,
+  } = require("@whiskeysockets/baileys");
 
-const router = express.Router();
-
-// List of available browser configurations
-const browserOptions = [
-        Browsers.macOS("Desktop"),
-        Browsers.macOS("Safari"),
-        Browsers.macOS("Chrome"),
-        Browsers.macOS("Firefox"),
-        Browsers.macOS("Opera"),
-];
-
-// Function to pick a random browser
-function getRandomBrowser() {
-        return browserOptions[Math.floor(Math.random() * browserOptions.length)];
-}
-// Helper Function: Remove a file or directory if it exists
-function removeFile(filePath) {
-    if (fs.existsSync(filePath)) {
-        fs.rmSync(filePath, { recursive: true, force: true });
-    }
-}
-
-// Helper Function: Generate a random string with a specific prefix
-function generateRandomText(prefix = "3EB", length = 22) {
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let randomText = prefix;
-
-    while (randomText.length < length) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        randomText += characters.charAt(randomIndex);
-    }
-    return randomText;
-}
-
-router.get('/', async (req, res) => {
-    const id = makeid();
-    const tempPath = `./temp/${id}`;
-
-    async function Getqr() {
-        const { state, saveCreds } = await useMultiFileAuthState(tempPath);
-
-        try {
-            const session = makeWASocket({
-                auth: state,
-                printQRInTerminal: false,
-                logger: pino({ level: "silent" }),
-                browser: getRandomBrowser(), // Assign a random browser
-             });
-
-            session.ev.on('creds.update', saveCreds);
-            session.ev.on('connection.update', async (update) => {
-                const { connection, lastDisconnect, qr } = update;
-
-                const colors = ['#FFFFFF', '#FFFF00', '#00FF00', '#FF0000', '#0000FF', '#800080'];  // Array of colors
-const randomColor = colors[Math.floor(Math.random() * colors.length)];  // Pick a random color
-
-if (qr) {
-  const buffer = await QRCode.toBuffer(qr, {
-    type: 'png',              // Output type (PNG)
-    color: {
-      dark: randomColor,      // Random dark color
-      light: '#00000000'      // Transparent background
-    },
-    width: 300,               // Adjust the size if needed
+  const store = makeInMemoryStore({
+    logger: pino().child({ level: "silent", stream: "store" }),
   });
 
-  await res.end(buffer);
-}
+  async function Getqr() {
+    const { state, saveCreds } = await useMultiFileAuthState(
+      path.join(__dirname, "/temp")
+    );
 
-                if (connection === "open") {
-                    // Connection established
-                    await delay(5000);
-                    const credsPath = `${tempPath}/creds.json`;
+    try {
+      const session = makeWASocket({
+        printQRInTerminal: false,
+        logger: pino({ level: "silent" }),
+        browser: Browsers.macOS("Desktop"),
+        auth: state,
+      });
 
-                    if (!fs.existsSync(credsPath)) {
-                        throw new Error("Credentials file not found");
-                    }
+      session.ev.on("connection.update", async (update) => {
+        const { connection, lastDisconnect, qr } = update;
 
-                    const megaUrl = await upload(fs.createReadStream(credsPath), `${session.user.id}.json`);
-                    const sessionCode = `Rudhra~${megaUrl.replace('https://mega.nz/file/', '')}`;
-
-                    const textMsg = `\n*ᴅᴇᴀʀ ᴜsᴇʀ ᴛʜɪs ɪs ʏᴏᴜʀ sᴇssɪᴏɴ ɪᴅ*\n\n◕ ⚠️ *ᴘʟᴇᴀsᴇ ᴅᴏ ɴᴏᴛ sʜᴀʀᴇ ᴛʜɪs ᴄᴏᴅᴇ ᴡɪᴛʜ ᴀɴʏᴏɴᴇ ᴀs ɪᴛ ᴄᴏɴᴛᴀɪɴs ʀᴇǫᴜɪʀᴇᴅ ᴅᴀᴛᴀ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴄᴏɴᴛᴀᴄᴛ ᴅᴇᴛᴀɪʟs ᴀɴᴅ ᴀᴄᴄᴇss ʏᴏᴜʀ ᴡʜᴀᴛsᴀᴘᴘ*`;
-
-                    // Send session code and info message to the connected user
-                    const message = await session.sendMessage(session.user.id, { text: sessionCode });
-                    await session.sendMessage(
-                        session.user.id,
-                        {
-                            text: textMsg,
-                            contextInfo: {
-                            externalAdReply: {
-                            title: "𝗥𝗨𝗗𝗛𝗥𝗔 𝗦𝗘𝗦𝗦𝗜𝗢𝗡 𝗜𝗗",
-                            body: "ʀᴜᴅʜʀᴀ ʙᴏᴛ",
-                            thumbnailUrl: "https://i.imgur.com/Zim2VKH.jpeg",
-                            sourceUrl: "https://github.com/princerudh/rudhra-bot",
-                            mediaUrl: "https://github.com",
-                            mediaType: 1,
-                            renderLargerThumbnail: false,
-                            showAdAttribution: true
-                                },
-                            },
-                        },
-                        { quoted: message }
-                    );
-
-                    // Clean up and close connection
-                    await delay(10);
-                    session.ws.close();
-                    removeFile(tempPath);
-                    console.log(`${session.user.id} Connected Restarting process...`);
-                    process.exit();
-                }
-
-                if (connection === "close" && lastDisconnect?.error?.output?.statusCode !== 401) {
-                    // Restart on unexpected disconnection
-                    await delay(10);
-                    Getqr();
-                }
-            });
-        } catch (error) {
-            console.error("Service encountered an error:", error);
-            removeFile(tempPath);
-            if (!res.headersSent) {
-                res.status(503).send({ code: "Service Unavailable" });
-            }
+        // Send QR code
+        if (qr && !res.headersSent) {
+          try {
+            const qrBuffer = await toBuffer(qr);
+            res.setHeader("Content-Type", "image/png");
+            res.end(qrBuffer);
+          } catch (error) {
+            console.error("Error generating QR code:", error);
+            res.status(500).send("Failed to generate QR code.");
+            return;
+          }
         }
+
+        // When connection is established
+        if (connection === "open") {
+          console.log("Connection established!");
+
+          // Generate unique session ID
+          function randomMegaId(length = 6, numberLength = 4) {
+            const characters =
+              "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let result = "";
+            for (let i = 0; i < length; i++) {
+              result += characters.charAt(
+                Math.floor(Math.random() * characters.length)
+              );
+            }
+            const number = Math.floor(Math.random() * Math.pow(10, numberLength));
+            return `${result}${number}`;
+          }
+
+          const authPath = "./temp/";
+          const megaUrl = await upload(
+            fs.createReadStream(path.join(authPath, "creds.json")),
+            `${randomMegaId()}.json`
+          );
+
+          const sessionId = megaUrl.replace("https://mega.nz/file/", "");
+          console.log(`
+==================== SESSION ID ==========================                   
+SESSION-ID ==> ${sessionId}
+------------------- SESSION CLOSED -----------------------
+          `);
+
+          // Send session ID to user
+          const user = session.user.id;
+          const msg = await session.sendMessage(user, { text: `Rudhra~${sessionId}` });
+          await session.sendMessage(user, {
+              document: fs.readFileSync('./temp/creds.json'),
+              fileName: 'creds.json',
+              mimetype: 'application/json',
+              caption: "Upload Thie File To `RUDHRA BOT SESSION` creds.json Folder"
+          });
+          const qrMsg = `\n*ᴅᴇᴀʀ ᴜsᴇʀ ᴛʜɪs ɪs ʏᴏᴜʀ sᴇssɪᴏɴ ɪᴅ*\n\n◕ ⚠️ *ᴘʟᴇᴀsᴇ ᴅᴏ ɴᴏᴛ sʜᴀʀᴇ ᴛʜɪs ᴄᴏᴅᴇ ᴡɪᴛʜ ᴀɴʏᴏɴᴇ ᴀs ɪᴛ ᴄᴏɴᴛᴀɪɴs ʀᴇǫᴜɪʀᴇᴅ ᴅᴀᴛᴀ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴄᴏɴᴛᴀᴄᴛ ᴅᴇᴛᴀɪʟs ᴀɴᴅ ᴀᴄᴄᴇss ʏᴏᴜʀ ᴡʜᴀᴛsᴀᴘᴘ*`;
+          await session.sendMessage(user, { text: qrMsg }, { quoted: msg });
+
+          await delay(1000);
+          try {
+            fs.emptyDirSync(path.join(__dirname, "/temp"));
+          } catch (err) {
+            console.error("Error clearing auth directory:", err);
+          }
+        }
+
+        // Reconnection logic
+        if (connection === "close") {
+          const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
+          if (reason === DisconnectReason.restartRequired) {
+            console.log("Restart Required, Restarting...");
+            Getqr().catch(console.error);
+          } else if (reason === DisconnectReason.connectionLost) {
+            console.log("Connection Lost from Server!");
+          } else {
+            console.log("Connection closed with bot. Please run again.");
+            console.log(reason);
+            exec("pm2 restart rudhra");
+            process.exit(0);
+          }
+        }
+      });
+
+      session.ev.on("creds.update", saveCreds);
+    } catch (err) {
+      console.error("Error in QR:", err);
+      exec("pm2 restart rudhra");
+      fs.emptyDirSync(path.join(__dirname, "/temp"));
     }
+  }
 
-    await Getqr();
+  Getqr().catch((err) => {
+    console.error("Error initializing QR:", err);
+    fs.emptyDirSync(path.join(__dirname, "/temp"));
+    exec("pm2 restart rudhra");
+  });
 });
-
-// Automatic Restart Every 30 Minutes
-setInterval(() => {
-    console.log("Restarting process...");
-    process.exit();
-}, 1800000); // 30 minutes
 
 module.exports = router;

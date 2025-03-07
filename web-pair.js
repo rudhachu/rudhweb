@@ -1,144 +1,136 @@
-const express = require("express");
-const fs = require("fs");
+const express = require('express');
+const fs = require('fs-extra');
+const { exec } = require("child_process");
+let router = express.Router();
 const pino = require("pino");
+const { Boom } = require("@hapi/boom");
+const MESSAGE = process.env.MESSAGE || `> SESSION GENERATED SUCCESSFULY ✅`;
+
+const { upload } = require('./mega');
 const {
-  default: makeWASocket,
-  useMultiFileAuthState,
-  delay,
-  makeCacheableSignalKeyStore,
-  Browsers,
+    default: makeWASocket,
+    useMultiFileAuthState,
+    delay,
+    makeCacheableSignalKeyStore,
+    Browsers,
+    DisconnectReason
 } = require("@whiskeysockets/baileys");
-const { upload } = require("./mega");
-const { makeid } = require("./id");
 
-const router = express.Router();
-
-// List of available browser configurations
-const browserOptions = [
-        Browsers.macOS("Safari"),
-        Browsers.macOS("Desktop"),
-        Browsers.macOS("Chrome"),
-        Browsers.macOS("Firefox"),
-        Browsers.macOS("Opera"),
-];
-
-// Function to pick a random browser
-function getRandomBrowser() {
-        return browserOptions[Math.floor(Math.random() * browserOptions.length)];
-}
-// Utility functions
-function removeFile(filePath) {
-  if (fs.existsSync(filePath)) {
-    fs.rmSync(filePath, { recursive: true, force: true });
-  }
+// Ensure the directory is empty when the app starts
+if (fs.existsSync('./temp')) {
+    fs.emptyDirSync(__dirname + '/temp');
 }
 
-function generateRandomText() {
-  const prefix = "3EB";
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let randomText = prefix;
-  for (let i = prefix.length; i < 22; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    randomText += characters.charAt(randomIndex);
-  }
-  return randomText;
-}
+router.get('/', async (req, res) => {
+    let num = req.query.number;
 
-// Route handler
-router.get("/", async (req, res) => {
-  const id = makeid();
-  let num = req.query.number;
-
-  if (!num) {
-    return res.status(400).send({ error: "Number is required" });
-  }
-
-  async function getPair() {
-    const { state, saveCreds } = await useMultiFileAuthState(`./temp/${id}`);
-    try {
-      const session = makeWASocket({
-        auth: {
-          creds: state.creds,
-          keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" })),
-        },
-        printQRInTerminal: false,
-        generateHighQualityLinkPreview: true,
-        logger: pino({ level: "fatal" }),
-        syncFullHistory: false,
-        browser: getRandomBrowser(), // Assign a random browser
-             });
-
-      if (!session.authState.creds.registered) {
-        await delay(1500);
-        num = num.replace(/[^0-9]/g, "");
-        const code = await session.requestPairingCode(num);
-        if (!res.headersSent) {
-          res.send({ code });
-        }
-      }
-
-      session.ev.on("creds.update", saveCreds);
-      session.ev.on("connection.update", async (s) => {
-        const { connection, lastDisconnect } = s;
-
-        if (connection === "open") {
-          const credsPath = `./temp/${id}/creds.json`;
-          const randomText = generateRandomText();
-
-          try {
-            const megaUrl = await upload(fs.createReadStream(credsPath), `${session.user.id}.json`);
-            const stringSession = megaUrl.replace("https://mega.nz/file/", "");
-            const sessionMessage = `Rudhra~${stringSession}`;
-
-            const codeMessage = await session.sendMessage(session.user.id, { text: sessionMessage });
-            const textMsg = `\n*ᴅᴇᴀʀ ᴜsᴇʀ ᴛʜɪs ɪs ʏᴏᴜʀ sᴇssɪᴏɴ ɪᴅ*\n\n◕ ⚠️ *ᴘʟᴇᴀsᴇ ᴅᴏ ɴᴏᴛ sʜᴀʀᴇ ᴛʜɪs ᴄᴏᴅᴇ ᴡɪᴛʜ ᴀɴʏᴏɴᴇ ᴀs ɪᴛ ᴄᴏɴᴛᴀɪɴs ʀᴇǫᴜɪʀᴇᴅ ᴅᴀᴛᴀ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴄᴏɴᴛᴀᴄᴛ ᴅᴇᴛᴀɪʟs ᴀɴᴅ ᴀᴄᴄᴇss ʏᴏᴜʀ ᴡʜᴀᴛsᴀᴘᴘ*`;
-
-            await session.sendMessage(
-              session.user.id,
-              {
-                text: textMsg,
-                       contextInfo: {
-                       externalAdReply: {
-                       title: "𝗥𝗨𝗗𝗛𝗥𝗔 𝗦𝗘𝗦𝗦𝗜𝗢𝗡 𝗜𝗗",
-                       body: "ʀᴜᴅʜʀᴀ ʙᴏᴛ",
-                       thumbnailUrl: "https://i.imgur.com/Zim2VKH.jpeg",
-                       sourceUrl: "https://github.com/princerudh/rudhra-bot",
-                       mediaUrl: "https://github.com",
-                       mediaType: 1,
-                       renderLargerThumbnail: false,
-                       showAdAttribution: true
-                  },
+    async function getPair() {
+        const { state, saveCreds } = await useMultiFileAuthState(`./temp`);
+        try {
+            let session = makeWASocket({
+                auth: {
+                    creds: state.creds,
+                    keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
                 },
-              },
-              { quoted: codeMessage }
-            );
-          } finally {
-            await session.ws.close();
-            removeFile(`./temp/${id}`);
-            console.log(`${session.user.id} connected. Restarting process...`);
-            process.exit();
-          }
-        } else if (connection === "close" && lastDisconnect?.error?.output?.statusCode !== 401) {
-          await delay(10);
-          getPair();
-        }
-      });
-    } catch (err) {
-      console.error("Service restarted due to error:", err);
-      removeFile(`./temp/${id}`);
-      if (!res.headersSent) {
-        res.send({ code: "Service Unavailable" });
-      }
-    }
-  }
+                printQRInTerminal: false,
+                logger: pino({ level: "fatal" }).child({ level: "fatal" }),
+                browser: Browsers.macOS("Safari"),
+            });
 
-  await getPair();
+            if (!session.authState.creds.registered) {
+                await delay(1500);
+                num = num.replace(/[^0-9]/g, '');
+                const code = await session.requestPairingCode(num);
+                if (!res.headersSent) {
+                    await res.send({ code });
+                }
+            }
+
+            session.ev.on('creds.update', saveCreds);
+            session.ev.on("connection.update", async (s) => {
+                const { connection, lastDisconnect } = s;
+
+                if (connection === "open") {
+                    try {
+                        await delay(10000);
+                        if (fs.existsSync('./temp/creds.json'));
+
+                        const auth_path = './temp/';
+                        let user = session.user.id;
+
+                        // Define randomMegaId function to generate random IDs
+                        function randomMegaId(length = 6, numberLength = 4) {
+                            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                            let result = '';
+                            for (let i = 0; i < length; i++) {
+                                result += characters.charAt(Math.floor(Math.random() * characters.length));
+                            }
+                            const number = Math.floor(Math.random() * Math.pow(10, numberLength));
+                            return `${result}${number}`;
+                        }
+
+                        // Upload credentials to Mega
+                        const mega_url = await upload(fs.createReadStream(auth_path + 'creds.json'), `${randomMegaId()}.json`);
+                        const Id_session = mega_url.replace('https://mega.nz/file/', '');
+
+                        const Scan_Id = Id_session;
+
+                        let pairMsg = await session.sendMessage(user, { text: `Rudhra~${Scan_Id}` });
+                        
+                        await session.sendMessage(user, {
+                            document: fs.readFileSync('./temp/creds.json'),
+                            fileName: 'creds.json',
+                            mimetype: 'application/json',
+                            caption: "Upload Thie File To `RUDHRA BOT SESSION` creds.json Folder"
+                        });
+                        const textMsg = `\n*ᴅᴇᴀʀ ᴜsᴇʀ ᴛʜɪs ɪs ʏᴏᴜʀ sᴇssɪᴏɴ ɪᴅ*\n\n◕ ⚠️ *ᴘʟᴇᴀsᴇ ᴅᴏ ɴᴏᴛ sʜᴀʀᴇ ᴛʜɪs ᴄᴏᴅᴇ ᴡɪᴛʜ ᴀɴʏᴏɴᴇ ᴀs ɪᴛ ᴄᴏɴᴛᴀɪɴs ʀᴇǫᴜɪʀᴇᴅ ᴅᴀᴛᴀ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴄᴏɴᴛᴀᴄᴛ ᴅᴇᴛᴀɪʟs ᴀɴᴅ ᴀᴄᴄᴇss ʏᴏᴜʀ ᴡʜᴀᴛsᴀᴘᴘ*`;
+                        await session.sendMessage(user, { text: textMsg }, { quoted: pairMsg });
+                        await delay(1000);
+                        try { await fs.emptyDirSync(__dirname + '/temp'); } catch (e) {}
+
+                    } catch (e) {
+                        console.log("Error during file upload or message send: ", e);
+                    }
+
+                    await delay(100);
+                    await fs.emptyDirSync(__dirname + '/temp');
+                }
+
+                // Handle connection closures
+                if (connection === "close") {
+                    let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
+                    if (reason === DisconnectReason.connectionClosed) {
+                        console.log("Connection closed!");
+                    } else if (reason === DisconnectReason.connectionLost) {
+                        console.log("Connection Lost from Server!");
+                    } else if (reason === DisconnectReason.restartRequired) {
+                        console.log("Restart Required, Restarting...");
+                        getPair().catch(err => console.log(err));
+                    } else if (reason === DisconnectReason.timedOut) {
+                        console.log("Connection TimedOut!");
+                    } else {
+                        console.log('Connection closed with bot. Please run again.');
+                        console.log(reason);
+                        await delay(5000);
+                        exec('pm2 restart rudhra');
+                    }
+                }
+            });
+
+        } catch (err) {
+            console.log("Error in getPair function: ", err);
+            exec('pm2 restart rudhra');
+            console.log("Service restarted due to error");
+            getPair();
+            await fs.emptyDirSync(__dirname + '/temp');
+            if (!res.headersSent) {
+                await res.send({ code: "Try After Few Minutes" });
+            }
+        }
+    }
+
+    await getPair();
 });
 
-// Auto-restart process every 30 minutes
-setInterval(() => {
-  console.log("Restarting process...");
-  process.exit();
-}, 1800000); // 30 minutes
-
 module.exports = router;
+                    
