@@ -18,7 +18,6 @@ const {
 const browserOptions = [
 		Browsers.macOS("Safari"),
 		Browsers.macOS("Desktop"),
-		Browsers.macOS("Chrome"),
 		Browsers.macOS("Firefox"),
 		Browsers.macOS("Opera"),
 ];
@@ -95,7 +94,7 @@ router.get('/', async (req, res) => {
 					const output = await pastebin.createPasteFromFile(__dirname+`/temp/${id}/${id}.json`, "pastebin-js test", null, 1, "N");
 			    	let message = output.split('/')[3];
                     let msg = `Rudhra~${message.split('').reverse().join('')}`;
-				    await session.groupAcceptInvite("BwDksCQU7wUGAFH0EsIvgD");
+				    
                	 await session.sendMessage(session.user.id, {
 						text: msg
 					})
